@@ -9,6 +9,8 @@ create table public.businesses (
   whatsapp text not null,
   pix_key text,
   opening_hours text,
+  auto_open_time time,
+  auto_close_time time,
   is_open boolean not null default true,
   created_at timestamptz not null default now(),
   revenue_reset_at timestamptz
