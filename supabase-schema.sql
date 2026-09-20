@@ -10,7 +10,8 @@ create table public.businesses (
   pix_key text,
   opening_hours text,
   is_open boolean not null default true,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  revenue_reset_at timestamptz
 );
 
 create table public.store_admins (
