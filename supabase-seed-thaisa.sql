@@ -20,21 +20,21 @@ begin
   select id into v_especiais from public.categories where business_id=v_business and name='Combinações especiais' limit 1;
   select id into v_picoles from public.categories where business_id=v_business and name='Picolés' limit 1;
 
-  insert into public.products (business_id,category_id,name,description,price,included_complements,includes_coverage) values
-  (v_business,v_acai,'Açaí 130 g','Inclui 2 complementos + cobertura.',10,2,true),
-  (v_business,v_acai,'Açaí 200 g','Inclui 2 complementos + cobertura.',15,2,true),
-  (v_business,v_acai,'Açaí 265 g','Inclui 2 complementos + cobertura.',20,2,true),
-  (v_business,v_acai,'Açaí 330 g','Inclui 2 complementos + cobertura.',25,2,true),
-  (v_business,v_acai,'Açaí 400 g','Inclui 2 complementos + cobertura.',30,2,true),
-  (v_business,v_acai,'Açaí 465 g','Inclui 2 complementos + cobertura.',35,2,true),
-  (v_business,v_acai,'Açaí 530 g','Inclui 2 complementos + cobertura.',40,2,true),
-  (v_business,v_acai,'Açaí 600 g','Inclui 2 complementos + cobertura.',45,2,true),
-  (v_business,v_especiais,'Açaí Kids','Marshmallow, M&M, Chocoboll e cobertura de chocolate. Tamanho P.',15,0,false),
-  (v_business,v_especiais,'Açaí Festa','Jujuba, Fini, canudinho, granulado e cobertura de morango.',25,0,false),
-  (v_business,v_especiais,'Açaí Choconmania','Bis, gotas de chocolate, Chocoboll, creme chocolatudo e cobertura de chocolate. Tamanho M.',25,0,false),
-  (v_business,v_especiais,'Açaí Paçoquita','Paçoca, banana, leite em pó, creme de leitinho e leite condensado. Tamanho G.',35,0,false),
-  (v_business,v_especiais,'Açaí Delícia de Morango','Morango, creme de leitinho, granulado e cobertura de morango.',25,0,false),
-  (v_business,v_picoles,'Picolé – sabores variados','Unidade.',2,0,false);
+  insert into public.products (business_id,category_id,name,description,price,size_prices,included_complements,includes_coverage) values
+  (v_business,v_acai,'Açaí 130 g','Inclui 2 complementos + cobertura.',10,'{}',2,true),
+  (v_business,v_acai,'Açaí 200 g','Inclui 2 complementos + cobertura.',15,'{}',2,true),
+  (v_business,v_acai,'Açaí 265 g','Inclui 2 complementos + cobertura.',20,'{}',2,true),
+  (v_business,v_acai,'Açaí 330 g','Inclui 2 complementos + cobertura.',25,'{}',2,true),
+  (v_business,v_acai,'Açaí 400 g','Inclui 2 complementos + cobertura.',30,'{}',2,true),
+  (v_business,v_acai,'Açaí 465 g','Inclui 2 complementos + cobertura.',35,'{}',2,true),
+  (v_business,v_acai,'Açaí 530 g','Inclui 2 complementos + cobertura.',40,'{}',2,true),
+  (v_business,v_acai,'Açaí 600 g','Inclui 2 complementos + cobertura.',45,'{}',2,true),
+  (v_business,v_especiais,'Açaí Kids','Marshmallow, M&M, Chocoboll e cobertura de chocolate.',15,'{"P":15,"M":25,"G":35}',0,false),
+  (v_business,v_especiais,'Açaí Festa','Jujuba, Fini, canudinho, granulado e cobertura de morango.',15,'{"P":15,"M":25,"G":35}',0,false),
+  (v_business,v_especiais,'Açaí Choconmania','Bis, gotas de chocolate, Chocoboll, creme chocolatudo e cobertura de chocolate.',15,'{"P":15,"M":25,"G":35}',0,false),
+  (v_business,v_especiais,'Açaí Paçoquita','Paçoca, banana, leite em pó, creme de leitinho e leite condensado.',15,'{"P":15,"M":25,"G":35}',0,false),
+  (v_business,v_especiais,'Açaí Delícia de Morango','Morango, creme de leitinho, granulado e cobertura de morango.',15,'{"P":15,"M":25,"G":35}',0,false),
+  (v_business,v_picoles,'Picolé – sabores variados','Unidade.',2,'{}',0,false);
 
   insert into public.complements (business_id,name,price,kind) values
   (v_business,'Bis',2,'complemento'),(v_business,'Pedaços de castanha',2,'complemento'),

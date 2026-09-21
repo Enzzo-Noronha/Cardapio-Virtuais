@@ -37,6 +37,7 @@ create table public.products (
   name text not null,
   description text,
   price numeric(10,2) not null check (price >= 0),
+  size_prices jsonb not null default '{}'::jsonb,
   image_url text,
   included_complements integer not null default 0 check (included_complements >= 0),
   includes_coverage boolean not null default false,

@@ -38,6 +38,8 @@ declare
   v_coverage_count integer;
   v_additional numeric(10,2);
   v_unit_price numeric(10,2);
+  v_size text;
+  v_size_price numeric(10,2);
   v_subtotal numeric(10,2) := 0;
   v_total numeric(10,2);
   v_complement_id uuid;
@@ -93,10 +95,17 @@ begin
     if v_qty < 1 or v_qty > 50 or not (v_item ? 'product_id') then
       raise exception 'Item inválido.';
     end if;
-    select p.id, p.name, p.price, p.included_complements, p.includes_coverage into v_product
+    select p.id, p.name, p.price, p.size_prices, p.included_complements, p.includes_coverage into v_product
     from public.products p
     where p.id = (v_item ->> 'product_id')::uuid and p.business_id = p_business_id and p.active;
     if not found then raise exception 'Produto indisponível.'; end if;
+    v_size := nullif(trim(coalesce(v_item ->> 'size', '')), '');
+    v_size_price := v_product.price;
+    if v_size is not null then
+      if not (v_product.size_prices ? v_size) then raise exception 'Tamanho inválido para este produto.'; end if;
+      v_size_price := (v_product.size_prices ->> v_size)::numeric;
+      if v_size_price < 0 then raise exception 'Tamanho inválido para este produto.'; end if;
+    end if;
 
     if jsonb_typeof(coalesce(v_item -> 'complement_ids', '[]'::jsonb)) <> 'array' then
       raise exception 'Complementos inválidos.';
@@ -124,7 +133,7 @@ begin
       if length(v_note) > 200 then raise exception 'Observação muito longa.'; end if;
       v_item_complements := v_item_complements || jsonb_build_array(jsonb_build_object('name', 'Observação: ' || v_note, 'price', 0));
     end if;
-    v_unit_price := v_product.price + v_additional;
+    v_unit_price := v_size_price + v_additional;
     v_subtotal := v_subtotal + (v_unit_price * v_qty);
   end loop;
 
@@ -144,8 +153,11 @@ begin
 
   for v_item in select value from jsonb_array_elements(p_items)
   loop
-    select p.name, p.price, p.included_complements into v_product
+    select p.name, p.price, p.size_prices, p.included_complements into v_product
     from public.products p where p.id = (v_item ->> 'product_id')::uuid;
+    v_size := nullif(trim(coalesce(v_item ->> 'size', '')), '');
+    v_size_price := v_product.price;
+    if v_size is not null then v_size_price := (v_product.size_prices ->> v_size)::numeric; end if;
     v_regular_count := 0; v_additional := 0; v_item_complements := '[]'::jsonb;
     for v_complement_id in select value::uuid from jsonb_array_elements_text(coalesce(v_item -> 'complement_ids', '[]'::jsonb))
     loop
@@ -161,7 +173,7 @@ begin
     v_note := nullif(trim(coalesce(v_item ->> 'note', '')), '');
     if v_note is not null then v_item_complements := v_item_complements || jsonb_build_array(jsonb_build_object('name', 'Observação: ' || v_note, 'price', 0)); end if;
     insert into public.order_items (order_id, product_name, unit_price, quantity, complements)
-    values (v_order_id, v_product.name, v_product.price + v_additional, (v_item ->> 'quantity')::integer, v_item_complements);
+    values (v_order_id, v_product.name || case when v_size is null then '' else ' (' || v_size || ')' end, v_size_price + v_additional, (v_item ->> 'quantity')::integer, v_item_complements);
   end loop;
   return v_order_id;
 end;
