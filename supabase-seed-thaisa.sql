@@ -12,23 +12,25 @@ begin
     raise exception 'Crie primeiro a loja com o slug thaisa-acai.';
   end if;
 
-  insert into public.categories (business_id, name, position, active)
-  values (v_business, 'Açaí por peso', 1, true), (v_business, 'Combinações especiais', 2, true),
-         (v_business, 'Picolés', 3, true), (v_business, 'Sorvetes', 4, false);
+  insert into public.categories (business_id, name, position, order_options, active)
+  values (v_business, 'Açaí ou Sorvete', 1,
+          '{"allow_base_choice":true,"ice_cream_flavors":["Bom Bom","Flocos","Brigadeiro","Pavê","Morango","Cookies"]}', true),
+         (v_business, 'Combinações especiais', 2, '{}', true),
+         (v_business, 'Picolés', 3, '{}', true), (v_business, 'Sorvetes', 4, '{}', false);
 
-  select id into v_acai from public.categories where business_id=v_business and name='Açaí por peso' limit 1;
+  select id into v_acai from public.categories where business_id=v_business and name='Açaí ou Sorvete' limit 1;
   select id into v_especiais from public.categories where business_id=v_business and name='Combinações especiais' limit 1;
   select id into v_picoles from public.categories where business_id=v_business and name='Picolés' limit 1;
 
   insert into public.products (business_id,category_id,name,description,price,size_prices,included_complements,includes_coverage) values
-  (v_business,v_acai,'Açaí 130 g','Inclui 2 complementos + cobertura.',10,'{}',2,true),
-  (v_business,v_acai,'Açaí 200 g','Inclui 2 complementos + cobertura.',15,'{}',2,true),
-  (v_business,v_acai,'Açaí 265 g','Inclui 2 complementos + cobertura.',20,'{}',2,true),
-  (v_business,v_acai,'Açaí 330 g','Inclui 2 complementos + cobertura.',25,'{}',2,true),
-  (v_business,v_acai,'Açaí 400 g','Inclui 2 complementos + cobertura.',30,'{}',2,true),
-  (v_business,v_acai,'Açaí 465 g','Inclui 2 complementos + cobertura.',35,'{}',2,true),
-  (v_business,v_acai,'Açaí 530 g','Inclui 2 complementos + cobertura.',40,'{}',2,true),
-  (v_business,v_acai,'Açaí 600 g','Inclui 2 complementos + cobertura.',45,'{}',2,true),
+  (v_business,v_acai,'Porção 130 g','Inclui 2 complementos + cobertura.',10,'{}',2,true),
+  (v_business,v_acai,'Porção 200 g','Inclui 2 complementos + cobertura.',15,'{}',2,true),
+  (v_business,v_acai,'Porção 265 g','Inclui 2 complementos + cobertura.',20,'{}',2,true),
+  (v_business,v_acai,'Porção 330 g','Inclui 2 complementos + cobertura.',25,'{}',2,true),
+  (v_business,v_acai,'Porção 400 g','Inclui 2 complementos + cobertura.',30,'{}',2,true),
+  (v_business,v_acai,'Porção 465 g','Inclui 2 complementos + cobertura.',35,'{}',2,true),
+  (v_business,v_acai,'Porção 530 g','Inclui 2 complementos + cobertura.',40,'{}',2,true),
+  (v_business,v_acai,'Porção 600 g','Inclui 2 complementos + cobertura.',45,'{}',2,true),
   (v_business,v_especiais,'Açaí Kids','Marshmallow, M&M, Chocoboll e cobertura de chocolate.',15,'{"P":15,"M":25,"G":35}',0,false),
   (v_business,v_especiais,'Açaí Festa','Jujuba, Fini, canudinho, granulado e cobertura de morango.',15,'{"P":15,"M":25,"G":35}',0,false),
   (v_business,v_especiais,'Açaí Choconmania','Bis, gotas de chocolate, Chocoboll, creme chocolatudo e cobertura de chocolate.',15,'{"P":15,"M":25,"G":35}',0,false),

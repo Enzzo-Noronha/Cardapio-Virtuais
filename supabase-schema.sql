@@ -27,6 +27,7 @@ create table public.categories (
   business_id uuid not null references public.businesses(id) on delete cascade,
   name text not null,
   position integer not null default 0,
+  order_options jsonb not null default '{}'::jsonb,
   active boolean not null default true
 );
 
