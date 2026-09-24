@@ -63,18 +63,24 @@ begin
     from public.businesses b
     where b.id = p_business_id
       and (
-        (
-          (b.auto_open_time is null or b.auto_close_time is null or b.auto_open_time = b.auto_close_time)
-          and b.is_open
-        )
+        (b.manual_override_date = (now() at time zone 'America/Fortaleza')::date and b.manual_override_open)
         or (
-          b.auto_open_time is not null
-          and b.auto_close_time is not null
-          and b.auto_open_time <> b.auto_close_time
+          b.manual_override_date is distinct from (now() at time zone 'America/Fortaleza')::date
           and (
-            (b.auto_open_time < b.auto_close_time and (now() at time zone 'America/Fortaleza')::time >= b.auto_open_time and (now() at time zone 'America/Fortaleza')::time < b.auto_close_time)
-            or
-            (b.auto_open_time > b.auto_close_time and ((now() at time zone 'America/Fortaleza')::time >= b.auto_open_time or (now() at time zone 'America/Fortaleza')::time < b.auto_close_time))
+            (
+              (b.auto_open_time is null or b.auto_close_time is null or b.auto_open_time = b.auto_close_time)
+              and b.is_open
+            )
+            or (
+              b.auto_open_time is not null
+              and b.auto_close_time is not null
+              and b.auto_open_time <> b.auto_close_time
+              and (
+                (b.auto_open_time < b.auto_close_time and (now() at time zone 'America/Fortaleza')::time >= b.auto_open_time and (now() at time zone 'America/Fortaleza')::time < b.auto_close_time)
+                or
+                (b.auto_open_time > b.auto_close_time and ((now() at time zone 'America/Fortaleza')::time >= b.auto_open_time or (now() at time zone 'America/Fortaleza')::time < b.auto_close_time))
+              )
+            )
           )
         )
       )

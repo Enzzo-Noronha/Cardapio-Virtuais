@@ -12,6 +12,9 @@ create table public.businesses (
   auto_open_time time,
   auto_close_time time,
   is_open boolean not null default true,
+  manual_override_date date,
+  manual_override_open boolean,
+  check ((manual_override_date is null) = (manual_override_open is null)),
   created_at timestamptz not null default now(),
   revenue_reset_at timestamptz
 );
