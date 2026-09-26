@@ -159,6 +159,9 @@ begin
   end loop;
 
   v_total := v_subtotal + v_locality.fee;
+  if v_total < 20 then
+    raise exception 'O pedido mínimo é de R$ 20,00.';
+  end if;
   if p_payment_method = 'cash' and coalesce(p_cash_amount, 0) < v_total then
     raise exception 'O valor em dinheiro não cobre o total.';
   end if;
