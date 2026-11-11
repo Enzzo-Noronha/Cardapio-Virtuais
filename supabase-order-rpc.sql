@@ -58,33 +58,7 @@ begin
   end if;
   if jsonb_array_length(p_items) = 0 then raise exception 'O pedido não pode estar vazio.'; end if;
 
-  if not exists (
-    select 1
-    from public.businesses b
-    where b.id = p_business_id
-      and (
-        (b.manual_override_date = (now() at time zone 'America/Fortaleza')::date and b.manual_override_open)
-        or (
-          b.manual_override_date is distinct from (now() at time zone 'America/Fortaleza')::date
-          and (
-            (
-              (b.auto_open_time is null or b.auto_close_time is null or b.auto_open_time = b.auto_close_time)
-              and b.is_open
-            )
-            or (
-              b.auto_open_time is not null
-              and b.auto_close_time is not null
-              and b.auto_open_time <> b.auto_close_time
-              and (
-                (b.auto_open_time < b.auto_close_time and (now() at time zone 'America/Fortaleza')::time >= b.auto_open_time and (now() at time zone 'America/Fortaleza')::time < b.auto_close_time)
-                or
-                (b.auto_open_time > b.auto_close_time and ((now() at time zone 'America/Fortaleza')::time >= b.auto_open_time or (now() at time zone 'America/Fortaleza')::time < b.auto_close_time))
-              )
-            )
-          )
-        )
-      )
-  ) then
+  if not coalesce((select aberto from public.store_status_at(p_business_id, now())), false) then
     raise exception 'A loja não está aceitando pedidos.';
   end if;
 
